@@ -433,6 +433,44 @@ def populate_placeholder(
         }
 
 @app.tool()
+def get_placeholder_text(
+    slide_index: int,
+    placeholder_idx: int,
+    presentation_id: Optional[str] = None
+) -> Dict:
+    """Get the text from a placeholder."""
+    # Use the specified presentation or the current one
+    pres_id = presentation_id if presentation_id is not None else current_presentation_id
+    
+    if pres_id is None or pres_id not in presentations:
+        return {
+            "error": "No presentation is currently loaded or the specified ID is invalid"
+        }
+    
+    pres = presentations[pres_id]
+    
+    # Check if slide index is valid
+    if slide_index < 0 or slide_index >= len(pres.slides):
+        return {
+            "error": f"Invalid slide index: {slide_index}. Available slides: 0-{len(pres.slides) - 1}"
+        }
+    
+    slide = pres.slides[slide_index]
+    
+    try:
+        # Get the placeholder text
+        text = ppt_utils.get_placeholder_text(slide, placeholder_idx)
+        
+        return {
+            "slide_index": slide_index,
+            "placeholder_idx": placeholder_idx,
+            "text": text
+        }
+    except Exception as e:
+        return {
+            "error": f"Failed to get placeholder text: {str(e)}"
+        }
+@app.tool()
 def add_bullet_points(
     slide_index: int,
     placeholder_idx: int,

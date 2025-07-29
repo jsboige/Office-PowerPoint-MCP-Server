@@ -258,6 +258,26 @@ def add_bullet_points(placeholder, bullet_points: List[str]) -> None:
         if i < len(bullet_points) - 1:
             p.line_spacing = 1.0
 
+def get_placeholder_text(slide, placeholder_idx: int) -> str:
+    """
+    Get the text from a placeholder.
+    
+    Args:
+        slide: The slide object
+        placeholder_idx: The index of the placeholder
+        
+    Returns:
+        The text content of the placeholder
+    """
+    # Find the placeholder by its index
+    for p in slide.placeholders:
+        if p.placeholder_format.idx == placeholder_idx:
+            if p.has_text_frame:
+                return p.text_frame.text
+            else:
+                return ""  # Return empty string if no text frame
+    
+    raise ValueError(f"Placeholder with index {placeholder_idx} not found.")
 # ---- Text Functions ----
 
 def add_textbox(slide, left: float, top: float, width: float, height: float, text: str) -> Any:
